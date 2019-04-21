@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+  webapi:
+    image: webapi
+    container_name: webapi
+    build:
+      context: .
+    ports:
+      - 5000:5000
+    networks:
+      - metrics-network
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    volumes:
+      - ./prometheus/:/etc/prometheus/
+      - prometheus_data:/prometheus
+    ports:
+      - 9090:9090
+    networks:
+      - metrics-network
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    volumes:
+      - grafana_data:/var/lib/grafana
+    ports:
+      - 3000:3000
+    networks:
+      - metrics-network
+
+volumes:
+  prometheus_data: {}
+  grafana_data: {}
+
+networks:
+  metrics-network:
